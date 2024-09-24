@@ -33,17 +33,22 @@ export const renderRoutes = (routes = []) => (
 const routes = [
   {
     exact: 'true',
+    path: '/index',
+    element: lazy(() => import('./views/extra/index'))
+  },
+  {
+    exact: 'true',
     path: '/login',
     element: lazy(() => import('./views/auth/signin/SignIn1'))
   },
   {
     exact: 'true',
-    path: '/auth/signin-1',
+    path: '/auth/signin',
     element: lazy(() => import('./views/auth/signin/SignIn1'))
   },
   {
     exact: 'true',
-    path: '/auth/signup-1',
+    path: '/auth/signup',
     element: lazy(() => import('./views/auth/signup/SignUp1'))
   },
   {
@@ -94,6 +99,11 @@ const routes = [
         exact: 'true',
         path: '/forms/form-basic',
         element: lazy(() => import('./views/forms/FormsElements'))
+      },
+      {
+        exact: 'true',
+        path: '/new-index',
+        element: lazy(() => import('./views/extra/index'))
       },
       {
         exact: 'true',

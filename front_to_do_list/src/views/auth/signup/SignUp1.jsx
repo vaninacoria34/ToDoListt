@@ -39,7 +39,7 @@ const SignUp1 = () => {
                   <button className="btn btn-primary mb-4">Registrarse</button>
                   <p className="mb-2">
                     ¿Ya tienes una cuenta?{' '}
-                    <NavLink to={'/auth/signin-1'} className="f-w-400">
+                    <NavLink to={'/auth/signin'} className="f-w-400">
                       Inicia sesión
                     </NavLink>
                   </p>
