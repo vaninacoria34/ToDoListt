@@ -27,9 +27,9 @@ const Signin1 = () => {
               </div>
               <h3 className="mb-4">Iniciar sesión</h3>
               <AuthLogin />
-              <p className="mb-0 text-muted">
+              <p className="mb-2">
                 ¿No tiene una cuenta?{' '}
-                <NavLink to="/auth/signup-1" className="f-w-400">
+                <NavLink to="/auth/signup" className="f-w-400">
                   Registrarse
                 </NavLink>
               </p>
