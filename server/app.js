@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session);
 const passport = require('passport');
+const cors = require('cors');
 
 const { database } = require('./keys');
 
@@ -10,7 +11,10 @@ const { database } = require('./keys');
 const app = express();
 
 // Configuraciones (Settings)
-app.set('port', process.env.PORT || 3000);
+app.set('port', process.env.PORT || 3001);
+
+// Habilitar CORS
+app.use(cors());
 
 // Middlewares
 app.use(express.urlencoded({ extended: false }));
