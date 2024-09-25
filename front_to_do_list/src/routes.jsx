@@ -33,13 +33,8 @@ export const renderRoutes = (routes = []) => (
 const routes = [
   {
     exact: 'true',
-    path: '/index',
+    path: '/',
     element: lazy(() => import('./views/extra/index'))
-  },
-  {
-    exact: 'true',
-    path: '/login',
-    element: lazy(() => import('./views/auth/signin/SignIn1'))
   },
   {
     exact: 'true',
@@ -57,53 +52,8 @@ const routes = [
     routes: [
       {
         exact: 'true',
-        path: '/app/dashboard/default',
-        element: lazy(() => import('./views/dashboard'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/button',
-        element: lazy(() => import('./views/ui-elements/basic/BasicButton'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/badges',
-        element: lazy(() => import('./views/ui-elements/basic/BasicBadges'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/breadcrumb-paging',
-        element: lazy(() => import('./views/ui-elements/basic/BasicBreadcrumb'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/collapse',
-        element: lazy(() => import('./views/ui-elements/basic/BasicCollapse'))
-      },
-      {
-        exact: 'true',
-        path: '/tarea/listado',
-        element: lazy(() => import('./views/tarea/ListadoTareas'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/tabs-pills',
-        element: lazy(() => import('./views/ui-elements/basic/BasicTabsPills'))
-      },
-      {
-        exact: 'true',
-        path: '/basic/typography',
-        element: lazy(() => import('./views/ui-elements/basic/BasicTypography'))
-      },
-      {
-        exact: 'true',
-        path: '/forms/form-basic',
-        element: lazy(() => import('./views/forms/FormsElements'))
-      },
-      {
-        exact: 'true',
-        path: '/new-index',
-        element: lazy(() => import('./views/extra/index'))
+        path: '/home',
+        element: lazy(() => import('./views/extra/home'))
       },
       {
         exact: 'true',
@@ -119,6 +69,10 @@ const routes = [
         exact: 'true',
         path: '/tarea/edit/:id',
         element: lazy(() => import('./views/tarea/EditTarea'))
+      },{
+        exact: 'true',
+        path: '/tarea/listado',
+        element: lazy(() => import('./views/tarea/ListadoTareas'))
       },
       {
         exact: 'true',
@@ -149,26 +103,6 @@ const routes = [
         exact: 'true',
         path: '/estado/listado',
         element: lazy(() => import('./views/estado/ListadoEstados'))
-      },
-      {
-        exact: 'true',
-        path: '/tables/bootstrap',
-        element: lazy(() => import('./views/tables/BootstrapTable'))
-      },
-      {
-        exact: 'true',
-        path: '/charts/nvd3',
-        element: lazy(() => import('./views/charts/nvd3-chart'))
-      },
-      {
-        exact: 'true',
-        path: '/maps/google-map',
-        element: lazy(() => import('./views/maps/GoogleMaps'))
-      },
-      {
-        exact: 'true',
-        path: '/sample-page',
-        element: lazy(() => import('./views/extra/SamplePage'))
       },
       {
         path: '*',
