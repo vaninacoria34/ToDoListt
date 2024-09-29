@@ -13,8 +13,11 @@
 <body>
     <div class="container-fluid">
         <header class="text-center mt-4">
-            <h1>Lista de Tareas</h1>
-            <button id="toggle-contrast" class="btn btn-secondary">Cambiar Contraste</button>
+            <h1>Agenda digital</h1>
+            <button id="toggle-contrast" class="btn btn-secondary">
+                <span id="icon-mode" class="bi bi-moon-fill"></span>
+                Cambiar Contraste
+            </button>
         </header>
 
         <!-- Estructura con barra lateral y contenido principal -->
@@ -58,7 +61,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="task-desc" class="form-label">Descripción</label>
-                            <textarea class="form-control" id="task-desc" rows="3" required></textarea>
+                            <textarea type="text" class="form-control" id="task-desc" rows="3" required></textarea>
                         </div>
 
                         <!-- Campo para seleccionar categoría -->
@@ -92,7 +95,7 @@
 
                 <!-- Lista de tareas -->
                 <section class="mt-4">
-                    <h2>Tareas</h2>
+                    <h2>Lista de Tareas</h2>
                     <ul id="task-list" class="list-group"></ul>
                 </section>
             </div>
