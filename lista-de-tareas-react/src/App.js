@@ -3,8 +3,11 @@ import './styles.css';
 import AgregarCategoria from './components/AgregarCategoria';
 import AgregarEstado from './components/AgregarEstado';
 import FormularioTareas from './components/FormularioTareas';
-import ListaDeTareas from './components/ListaDeTareas'
+import ListaDeTareas from './components/ListaDeTareas';
+import HomePage from './components/HomePage';
+import RegistroPage from './components/RegistroPage'; // Tu página de registro
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';  // Importamos Bootstrap
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -12,7 +15,7 @@ function App() {
   const [estados, setEstados] = useState(['Pendiente', 'En progreso', 'Completada']);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Cargar desde localStorage al montar el componente
+  // Cargar desde localStorage al montar el componente //
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     setTasks(storedTasks);
@@ -27,27 +30,34 @@ function App() {
     if (storedDarkMode === 'enabled') {
       setDarkMode(true);
     }
-  }, [categorias, estados]);
+  }, [categorias, estados]);  // Solo al cargar la primera vez, sin dependencias //
 
-  // Guardar en localStorage cuando cambien las tareas, categorías, estados o el modo oscuro
+  // Guardar tareas en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
+  // Guardar categorías en localStorage cuando cambien //
   useEffect(() => {
     localStorage.setItem('categories', JSON.stringify(categorias));
   }, [categorias]);
 
+  // Guardar estados en localStorage cuando cambien //
   useEffect(() => {
     localStorage.setItem('statuses', JSON.stringify(estados));
   }, [estados]);
 
+  // Manejo del modo oscuro (dark mode) //
   useEffect(() => {
-    document.body.classList.toggle('dark-mode', darkMode);
+    if (darkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
     localStorage.setItem('darkMode', darkMode ? 'enabled' : 'disabled');
   }, [darkMode]);
 
-  // Funciones para agregar y gestionar tareas, categorías, y estados
+  // Funciones para agregar y gestionar tareas, categorías, y estados//
   const agregarTarea = (nuevaTarea) => {
     setTasks([...tasks, nuevaTarea]);
   };
@@ -80,52 +90,70 @@ function App() {
   return (
     <Router>
       <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
-        <header className="text-center mt-4">
-          <h1>Agenda de Tareas</h1>
+        {/* Barra de navegación con Bootstrap */}
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div className="container-fluid">
+            <Link className="navbar-brand" to="/">Agenda</Link>
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <div className="collapse navbar-collapse" id="navbarNav">
+              <ul className="navbar-nav ms-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">Inicio</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/registro">Registrarse</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/tareas">Tareas</Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+        <div className="container mt-4">
           <button
             id="toggle-contrast"
-            className="btn btn-secondary"
+            className="btn btn-secondary mb-3"
             onClick={() => setDarkMode(!darkMode)}
           >
             {darkMode ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
           </button>
-          <nav>
-            <Link to="/">Inicio</Link> | 
-            <Link to="/agregar-mas"> Agregar Categorías/Estados</Link>
-          </nav>
-        </header>
-        <div className="d-flex mt-4">
-          <div className="flex-grow-1 p-3">
-            <Routes>
-              <Route path="/" element={
-                <>
-                  <FormularioTareas 
-                    categorias={categorias} 
-                    estados={estados} 
-                    agregarTarea={agregarTarea} 
-                  />
-                  <ListaDeTareas
-                    tareas={tasks}
-                    eliminarTarea={eliminarTarea}
-                    alternarEstadoTarea={alternarEstadoTarea}
-                  />
-                </>
-              } />
-              <Route path="/agregar-mas" element={
-                <>
-                  <AgregarCategoria 
-                    agregarCategoria={agregarCategoria} 
-                    categorias={categorias} 
-                    eliminarCategoria={eliminarCategoria} // Pasamos eliminarCategoria
-                  />
-                  <AgregarEstado 
-                    agregarEstado={agregarEstado} 
-                    estados={estados} 
-                  />
-                </>
-              } />
-            </Routes>
-          </div>
+          
+          <Routes>
+            {/* Página inicial con fondo turquesa y carrusel */}
+            <Route path="/" element={<HomePage />} />
+
+            {/* Página de registro */}
+            <Route path="/registro" element={<RegistroPage />} />
+
+            {/* Página de Tareas (donde gestionas las categorías, estados y tareas) */}
+            <Route path="/tareas" element={
+              <>
+                <AgregarCategoria 
+                  agregarCategoria={agregarCategoria} 
+                  categorias={categorias} 
+                  eliminarCategoria={eliminarCategoria} 
+                />
+                <AgregarEstado 
+                  agregarEstado={agregarEstado} 
+                  estados={estados} 
+                />
+                <FormularioTareas 
+                  categorias={categorias} 
+                  estados={estados} 
+                  agregarTarea={agregarTarea} 
+                />
+                <ListaDeTareas
+                  tareas={tasks}
+                  eliminarTarea={eliminarTarea}
+                  alternarEstadoTarea={alternarEstadoTarea}
+                />
+              </>
+            } />
+          </Routes>
         </div>
       </div>
     </Router>
