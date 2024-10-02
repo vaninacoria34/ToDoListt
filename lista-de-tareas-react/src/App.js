@@ -5,9 +5,9 @@ import AgregarEstado from './components/AgregarEstado';
 import FormularioTareas from './components/FormularioTareas';
 import ListaDeTareas from './components/ListaDeTareas';
 import HomePage from './components/HomePage';
-import RegistroPage from './components/RegistroPage'; // Tu página de registro
+import RegistroPage from './components/RegistroPage'; 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';  // Importamos Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';  
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -15,39 +15,39 @@ function App() {
   const [estados, setEstados] = useState(['Pendiente', 'En progreso', 'Completada']);
   const [darkMode, setDarkMode] = useState(false);
 
-  // Cargar desde localStorage al montar el componente //
+  // Cargar datos desde localStorage al montar el componente (sin dependencias innecesarias)
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     setTasks(storedTasks);
 
     const storedCategories = JSON.parse(localStorage.getItem('categories')) || [];
-    setCategorias(storedCategories.length ? storedCategories : categorias);
+    setCategorias(storedCategories.length ? storedCategories : ['Trabajo', 'Estudio', 'Personal']);
 
     const storedStatuses = JSON.parse(localStorage.getItem('statuses')) || [];
-    setEstados(storedStatuses.length ? storedStatuses : estados);
+    setEstados(storedStatuses.length ? storedStatuses : ['Pendiente', 'En progreso', 'Completada']);
 
     const storedDarkMode = localStorage.getItem('darkMode');
     if (storedDarkMode === 'enabled') {
       setDarkMode(true);
     }
-  }, [categorias, estados]);  // Solo al cargar la primera vez, sin dependencias //
+  }, []);  // Solo se ejecuta al montar el componente
 
   // Guardar tareas en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  // Guardar categorías en localStorage cuando cambien //
+  // Guardar categorías en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('categories', JSON.stringify(categorias));
   }, [categorias]);
 
-  // Guardar estados en localStorage cuando cambien //
+  // Guardar estados en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('statuses', JSON.stringify(estados));
   }, [estados]);
 
-  // Manejo del modo oscuro (dark mode) //
+  // Manejo del modo oscuro (dark mode)
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add('dark-mode');
@@ -57,7 +57,12 @@ function App() {
     localStorage.setItem('darkMode', darkMode ? 'enabled' : 'disabled');
   }, [darkMode]);
 
-  // Funciones para agregar y gestionar tareas, categorías, y estados//
+  // Función para alternar el modo oscuro
+  const toggleDarkMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
+  // Funciones para agregar y gestionar tareas, categorías, y estados
   const agregarTarea = (nuevaTarea) => {
     setTasks([...tasks, nuevaTarea]);
   };
@@ -87,6 +92,11 @@ function App() {
     setCategorias(nuevasCategorias);
   };
 
+  const eliminarEstado = (index) => {
+    const nuevosEstados = estados.filter((_, i) => i !== index);
+    setEstados(nuevosEstados);
+  };
+
   return (
     <Router>
       <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
@@ -114,10 +124,11 @@ function App() {
         </nav>
 
         <div className="container mt-4">
+          {/* Botón para activar/desactivar contraste */}
           <button
             id="toggle-contrast"
             className="btn btn-secondary mb-3"
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleDarkMode}  // Usa la nueva función de toggle
           >
             {darkMode ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
           </button>
@@ -140,6 +151,7 @@ function App() {
                 <AgregarEstado 
                   agregarEstado={agregarEstado} 
                   estados={estados} 
+                  eliminarEstado={eliminarEstado} // Aquí pasamos la función eliminarEstado
                 />
                 <FormularioTareas 
                   categorias={categorias} 

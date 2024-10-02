@@ -34,12 +34,12 @@ function ListaDeTareas({ tareas, eliminarTarea, alternarEstadoTarea }) {
 
           {/* Esta sección contiene botones de acción (Completar/Reabrir y Eliminar) */}
           <div>
-            {/* Botón para alternar entre completar o reabrir una tarea */}
+           {/* B otón para alternar entre completar o reabrir una tarea */}
             <button
               className="btn btn-success btn-sm me-2"
               onClick={() => alternarEstadoTarea(index)} // Llamamos a la función 'alternarEstadoTarea' pasando el índice de la tarea.
-            >
-              {task.completed ? 'Reabrir' : 'Completar'} // El texto del botón cambia dependiendo del estado de la tarea.
+            >--
+              {task.completed ? 'Reabrir' : 'Completar'} {/*El texto del botón cambia dependiendo del estado de la tarea*/}
             </button>
 
             {/* Botón para eliminar una tarea */}
