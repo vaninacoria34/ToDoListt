@@ -1,0 +1,172 @@
+/* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #ADD8E6; /* Celeste */
+    color: #020202; /* Texto en negro */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    color: #40E0D0; /* Turquesa */
+    margin-bottom: 10px;
+  }
+  
+  /* Dark mode */
+  body.dark-mode {
+    background-color: #006666; /* Turquesa oscuro */
+    color: #020202; /* Texto en negro */
+  }
+  
+  .app {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #020202; /* Texto en negro */
+  }
+  
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #020202; /* Texto en negro */
+  }
+  
+  button {
+    background-color: #40E0D0; /* Turquesa */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #008080; /* Turquesa más oscuro */
+  }
+  
+  nav {
+    margin-top: 15px;
+  }
+  
+  nav a {
+    color: #40E0D0; /* Turquesa */
+    margin: 0 10px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Flex container */
+  .d-flex {
+    display: flex;
+    gap: 20px;
+  }
+  
+  #sidebar {
+    background-color: #FFFFFF; /* Blanco */
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    flex: 0 0 25%;
+    color: #020202; /* Texto en negro */
+  }
+  
+  .flex-grow-1 {
+    flex: 1;
+    color: #020202; /* Texto en negro */
+  }
+  
+  /* Form styles */
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #020202; /* Texto en negro */
+  }
+  
+  input, select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #020202; /* Texto en negro */
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: #40E0D0; /* Turquesa */
+  }
+  
+  /* Task list */
+  .lista-de-tareas {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+  }
+  
+  .lista-de-tareas li {
+    background-color: #F9F9F9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #020202; /* Texto en negro */
+  }
+  
+  .lista-de-tareas li .estado {
+    font-weight: bold;
+    color: #666;
+  }
+  
+  .lista-de-tareas li.completed {
+    text-decoration: line-through;
+    color: #aaa;
+  }
+  
+  .lista-de-tareas button {
+    background-color: #40E0D0; /* Turquesa */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .lista-de-tareas button:hover {
+    background-color: #008080; /* Turquesa más oscuro */
+  }
+  
+  /* Dark mode for sidebar and tasks */
+  body.dark-mode #sidebar,
+  body.dark-mode .lista-de-tareas li {
+    background-color: #006666; /* Turquesa oscuro */
+    color: #020202; /* Texto en negro */
+  }
+  
+  body.dark-mode input,
+  body.dark-mode select {
+    background-color: #555;
+    color: #020202; /* Texto en negro */
+    border: 1px solid #777;
+  }
+  
+  body.dark-mode .lista-de-tareas li.completed {
+    color: #020202; /* Texto en negro */
+  }

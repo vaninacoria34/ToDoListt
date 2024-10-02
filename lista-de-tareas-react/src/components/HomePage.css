@@ -1,0 +1,18 @@
+.homepage-container {
+    height: 100vh;
+    background-color: #40E0D0; /* Fondo turquesa */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  h1 {
+    color: white;
+    margin-bottom: 20px;
+  }
+  
+  .carousel-inner img {
+    height: 500px;
+    object-fit: cover;
+  }
+  

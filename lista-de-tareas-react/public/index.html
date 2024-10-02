@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- Define la codificación de caracteres del documento como UTF-8 -->
+    
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <!-- Referencia al favicon (icono que aparece en la pestaña del navegador) -->
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Define la configuración de la ventana gráfica para que el contenido sea responsivo en dispositivos móviles -->
+    
+    <meta name="theme-color" content="#000000" />
+    <!-- Establece un color de tema para el navegador móvil. En este caso, es negro (#000000) -->
+    
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!-- Meta descripción de la página web, útil para SEO (optimización de motores de búsqueda) -->
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!-- Icono utilizado cuando se agrega la web como aplicación en la pantalla de inicio de un dispositivo iOS -->
+    
+    <!-- 
+      manifest.json proporciona metadatos utilizados cuando la aplicación web
+      se instala en el dispositivo móvil o en el escritorio del usuario.
+      Más información en: https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!-- Este archivo JSON contiene metadatos sobre la aplicación, como nombre, iconos y configuración de inicio -->
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Enlace para cargar los íconos de Bootstrap Icons desde un CDN -->
+
+    <!--
+      Nota: la variable %PUBLIC_URL% se usa aquí para que en el momento de la compilación,
+      las rutas de los recursos dentro de la carpeta `public` se ajusten automáticamente al entorno de despliegue.
+      Por ejemplo, en producción, %PUBLIC_URL% será reemplazado con la URL correcta de `public`.
+    -->
+
+    <title>TodoList</title>
+    <!-- Título de la página que aparecerá en la pestaña del navegador -->
+  </head>
+
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <!-- Mensaje que aparece si JavaScript está deshabilitado en el navegador del usuario -->
+
+    <div id="root"></div>
+    <!-- 
+      Div con el id "root", que es donde React montará toda la aplicación.
+      ReactDOM.render se encargará de insertar tu componente principal (App) dentro de este div.
+    -->
+
+    <!--
+      Este archivo HTML es una plantilla.
+      Si abres este archivo directamente en el navegador, solo verás una página vacía.
+      Todo el contenido dinámico es inyectado en este archivo cuando React se ejecuta.
+      Los scripts y componentes de la aplicación React serán incluidos automáticamente en esta sección del <body> durante el proceso de compilación.
+    -->
+  </body>
+</html>
+
