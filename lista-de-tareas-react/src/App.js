@@ -8,6 +8,8 @@ import HomePage from './components/HomePage';
 import RegistroPage from './components/RegistroPage'; 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';  
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function App() {
   const [tasks, setTasks] = useState([]);
