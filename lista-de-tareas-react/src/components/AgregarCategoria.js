@@ -37,7 +37,7 @@ function AgregarCategoria() {
   // Función para editar una categoría
   const editarCategoria = async (id, nombre) => {
     try {
-      const response = await fetch(`http://localhost:3001/categoria/update/${id}`, {
+      const response = await fetch(`http://localhost:3001/categoria/edit/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ function AgregarCategoria() {
       } else {
         agregarCategoria(nuevaCategoria);
       }
-      setNuevaCategoria(''); // Reiniciar el campo de entrada
+      setNuevaCategoria(''); // Limpiar el input
     }
   };
 
