@@ -1,55 +1,138 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-// Definimos un componente funcional llamado AgregarCategoria que recibe tres props:
-// agregarCategoria: función para agregar una nueva categoría
-// categorias: lista actual de categorías
-// eliminarCategoria: función para eliminar una categoría específica
-function AgregarCategoria({ agregarCategoria, categorias, eliminarCategoria }) {
-  // useState: se utiliza para manejar el estado local del valor del input de nueva categoría
+function AgregarCategoria() {
   const [nuevaCategoria, setNuevaCategoria] = useState('');
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaEditando, setCategoriaEditando] = useState(null); // Estado para manejar la categoría en edición
 
-  // Función que se ejecuta cuando hay un cambio en el input.
-  // Actualiza el estado 'nuevaCategoria' con el valor del input.
+  // Función para obtener categorías desde el backend
+  const obtenerCategorias = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/categoria');
+      const data = await response.json();
+      setCategorias(data);
+    } catch (error) {
+      console.error('Error al obtener categorías:', error);
+    }
+  };
+
+  // Función para agregar una nueva categoría
+  const agregarCategoria = async (nombre) => {
+    try {
+      const response = await fetch('http://localhost:3001/categoria/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nombre }),
+      });
+      const data = await response.json();
+      console.log(data.message); // Mensaje de éxito o error
+      obtenerCategorias(); // Actualizar la lista de categorías
+    } catch (error) {
+      console.error('Error al agregar categoría:', error);
+    }
+  };
+
+  // Función para editar una categoría
+  const editarCategoria = async (id, nombre) => {
+    try {
+      const response = await fetch(`http://localhost:3001/categoria/edit/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ nombre }),
+      });
+      const data = await response.json();
+      console.log(data.message); // Mensaje de éxito o error
+      obtenerCategorias(); // Actualizar la lista de categorías
+      cancelarEdicion(); // Reiniciar el estado de edición
+    } catch (error) {
+      console.error('Error al editar categoría:', error);
+    }
+  };
+
+  // Función para cancelar la edición
+  const cancelarEdicion = () => {
+    setCategoriaEditando(null); // Restablecer el estado de edición
+    setNuevaCategoria(''); // Limpiar el campo de entrada
+  };
+
+  // Función para eliminar una categoría
+  const eliminarCategoria = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3001/categoria/delete/${id}`, {
+        method: 'DELETE',
+      });
+      const data = await response.json();
+      console.log(data.message); // Mensaje de éxito o error
+      obtenerCategorias(); // Actualizar la lista de categorías
+    } catch (error) {
+      console.error('Error al eliminar categoría:', error);
+    }
+  };
+
   const manejarCambio = (e) => {
     setNuevaCategoria(e.target.value);
   };
 
-  // Función que maneja el envío del formulario.
-  // Verifica que la categoría no esté vacía ni repetida en la lista de categorías.
   const manejarSubmit = (e) => {
-    e.preventDefault(); // Evita el comportamiento predeterminado de recargar la página.
-    if (nuevaCategoria.trim() && !categorias.includes(nuevaCategoria)) {
-      agregarCategoria(nuevaCategoria); // Llama la función para agregar la categoría.
-      setNuevaCategoria(''); // Resetea el input después de agregar.
+    e.preventDefault();
+    if (nuevaCategoria.trim()) {
+      if (categoriaEditando) {
+        editarCategoria(categoriaEditando.PK_Categoria, nuevaCategoria);
+      } else {
+        agregarCategoria(nuevaCategoria);
+      }
+      setNuevaCategoria(''); // Limpiar el input
     }
   };
 
+  const iniciarEdicion = (categoria) => {
+    setCategoriaEditando(categoria);
+    setNuevaCategoria(categoria.nombre); // Prellena el campo con el nombre de la categoría
+  };
+
+  useEffect(() => {
+    obtenerCategorias(); // Obtener categorías al cargar el componente
+  }, []);
+
   return (
     <div>
-      <h3>Agregar Categoría</h3>
-      {/* Formulario que permite agregar una nueva categoría */}
+      <h3>{categoriaEditando ? 'Editar Categoría' : 'Agregar Categoría'}</h3>
       <form onSubmit={manejarSubmit}>
         <input
           type="text"
-          value={nuevaCategoria} // Vincula el valor del input al estado local 'nuevaCategoria'
-          onChange={manejarCambio} // Cada cambio en el input actualiza el estado
-          placeholder="Nueva Categoría" // Texto de ejemplo dentro del input
+          value={nuevaCategoria}
+          onChange={manejarCambio}
+          placeholder={categoriaEditando ? 'Editar Categoría' : 'Nueva Categoría'}
         />
-        <button type="submit">Agregar</button> {/* Botón para enviar el formulario */}
+        <button type="submit">{categoriaEditando ? 'Actualizar' : 'Agregar'}</button>
+        {categoriaEditando && (
+          <button type="button" onClick={cancelarEdicion} className="btn btn-secondary">
+            Cancelar
+          </button>
+        )}
       </form>
 
       <h3>Categorías</h3>
-      {/* Lista de categorías renderizada dinámicamente */}
       <ul>
-        {/* Recorre la lista de categorías y las muestra como elementos de la lista */}
-        {categorias.map((categoria, index) => (
-          <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-            {categoria} {/* Muestra el nombre de la categoría */}
-            <i 
-              className="bi bi-trash text-danger" 
-              style={{ cursor: 'pointer' }} 
-              onClick={() => eliminarCategoria(index)} // Llama la función eliminarCategoria al hacer clic en el icono
-            ></i>
+        {categorias.map((categoria) => (
+          <li key={categoria.PK_Categoria} className="list-group-item d-flex justify-content-between align-items-center">
+            {categoria.nombre}
+            <div>
+              <i
+                className="bi bi-pencil text-warning me-2"
+                style={{ cursor: 'pointer' }}
+                onClick={() => iniciarEdicion(categoria)} // Inicia la edición de la categoría
+              ></i>
+              <i
+                className="bi bi-trash text-danger"
+                style={{ cursor: 'pointer' }}
+                onClick={() => eliminarCategoria(categoria.PK_Categoria)} // Usar el ID de la categoría
+              ></i>
+            </div>
           </li>
         ))}
       </ul>
