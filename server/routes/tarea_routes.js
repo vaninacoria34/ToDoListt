@@ -1,13 +1,13 @@
 
-const express = require('express');
-const router = express.Router();
-const tareaController = require('../controllers/tarea_controller');
+import { Router } from 'express';
+const router = Router();
+import { listTareas, addTarea, getTareaById, editTarea, deleteTarea } from '../controllers/tarea_controller';
 
 // Rutas para Tareas
-router.get('/', tareaController.listTareas);
-router.post('/add', tareaController.addTarea);
-router.get('/:id', tareaController.getTareaById);
-router.put('/edit/:id', tareaController.editTarea);
-router.delete('/delete/:id', tareaController.deleteTarea);
+router.get('/', listTareas);
+router.post('/add', addTarea);
+router.get('/:id', getTareaById);
+router.put('/edit/:id', editTarea);
+router.delete('/delete/:id', deleteTarea);
 
-module.exports = router;
+export default router;

@@ -1,10 +1,10 @@
 
-const pool = require('../database');
+import { query } from '../database';
 
 // Listar todos los estados
-exports.listPrioridades = async (req, res) => {
+export async function listPrioridades(res) {
     try {
-        const prioridades = await pool.query('SELECT * FROM Prioridad');
+        const prioridades = query('SELECT * FROM Prioridad');
         if (prioridades && prioridades.length === 0) {
             res.status(404).json({ message: 'No hay prioridades registradas' });
         } else {
@@ -14,4 +14,4 @@ exports.listPrioridades = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Error al listar las prioridades' });
     }
-};
+}

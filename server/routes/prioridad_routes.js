@@ -1,8 +1,8 @@
 
-const express = require('express');
-const router = express.Router();
-const prioridadController = require('../controllers/prioridad_controller');
+import { Router } from 'express';
+const router = Router();
+import { listPrioridades } from '../controllers/prioridad_controller';
 
-router.get('/', prioridadController.listPrioridades);
+router.get('/', listPrioridades);
 
-module.exports = router;
+export default router;

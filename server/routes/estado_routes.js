@@ -1,12 +1,12 @@
 
-const express = require('express');
-const router = express.Router();
-const estadoController = require('../controllers/estado_controller');
+import { Router } from 'express';
+const router = Router();
+import { listEstados, addEstado, getEstadoById, editEstado, deleteEstado } from '../controllers/estado_controller';
 
-router.get('/', estadoController.listEstados);
-router.post('/add', estadoController.addEstado);
-router.get('/:id', estadoController.getEstadoById);
-router.put('/edit/:id', estadoController.editEstado);
-router.delete('/delete/:id', estadoController.deleteEstado);
+router.get('/', listEstados);
+router.post('/add', addEstado);
+router.get('/:id', getEstadoById);
+router.put('/edit/:id', editEstado);
+router.delete('/delete/:id', deleteEstado);
 
-module.exports = router;
+export default router;

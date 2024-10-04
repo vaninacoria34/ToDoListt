@@ -1,12 +1,12 @@
 
-const express = require('express');
-const router = express.Router();
-const categoriaController = require('../controllers/categoria_controller');
+import { Router } from 'express';
+const router = Router();
+import { listCategorias, addCategoria, getCategoriaById, editCategoria, deleteCategoria } from '../controllers/categoria_controller';
 
-router.get('/', categoriaController.listCategorias);
-router.post('/add', categoriaController.addCategoria);
-router.get('/:id', categoriaController.getCategoriaById);
-router.put('/edit/:id', categoriaController.editCategoria);
-router.delete('/delete/:id', categoriaController.deleteCategoria);
+router.get('/', listCategorias);
+router.post('/add', addCategoria);
+router.get('/:id', getCategoriaById);
+router.put('/edit/:id', editCategoria);
+router.delete('/delete/:id', deleteCategoria);
 
-module.exports = router;
+export default router;
