@@ -3,6 +3,8 @@ const pool = require('../database');
 
 // Listar todas las tareas
 exports.listTareas = async (req, res) => {
+    const { id } = req.params;
+
     try {
         const tareas = await pool.query(`
             SELECT t.*, e.nombre AS Estado, p.nombre AS Prioridad, c.nombre AS Categoria
@@ -11,8 +13,7 @@ exports.listTareas = async (req, res) => {
             JOIN Estado e ON t.FK_Estado = e.PK_Estado
             JOIN Prioridad p ON t.FK_Prioridad = p.PK_Prioridad
             JOIN Categoria c ON t.FK_Categoria = c.PK_Categoria
-        `);
-        // Agregar el WHERE u.PK_Usuario = req.user.PK_Usuario para filtrar por usuario
+            WHERE u.PK_Usuario = ?`, [id]);
 
         if (tareas.length === 0) {
             res.json({ message: 'No hay tareas' });
@@ -84,15 +85,15 @@ exports.getTareaById = async (req, res) => {
 // Editar una tarea
 exports.editTarea = async (req, res) => {
     const { id } = req.params;
-    const { titulo, descripcion, fecha_creacion, fecha_limite, FK_Usuario, FK_Estado, FK_Prioridad, FK_Categoria } = req.body;
+    const { titulo, descripcion, fecha_limite, FK_Usuario, FK_Estado, FK_Prioridad, FK_Categoria } = req.body;
 
     // Validar que los campos no estén vacíos
-    if (!titulo || !descripcion || !fecha_creacion || !fecha_limite || !FK_Usuario || !FK_Estado || !FK_Prioridad || !FK_Categoria) {
+    if (!titulo || !descripcion || !fecha_limite || !FK_Usuario || !FK_Estado || !FK_Prioridad || !FK_Categoria) {
         res.status(400).json({ message: 'Todos los campos son requeridos' });
     };
 
     try {
-        const edit_tarea = { titulo, descripcion, fecha_creacion, fecha_limite, FK_Usuario, FK_Estado, FK_Prioridad, FK_Categoria };
+        const edit_tarea = { titulo, descripcion, fecha_limite, FK_Usuario, FK_Estado, FK_Prioridad, FK_Categoria };
         const tarea = await pool.query('UPDATE Tarea SET ? WHERE PK_Tarea = ?', [edit_tarea, id]);
         if (tarea && tarea.affectedRows === 0) {
             res.json({ message: 'Tarea no encontrada' });

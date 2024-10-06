@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate  } from 'react-router-dom';
 
 // Definimos un componente funcional llamado FormularioTareas que recibe tres props: categorias, estados y agregarTarea.
-function FormularioTareas({ categorias: categoriasProp, estados: estadosProp, agregarTarea }) {
+function FormularioTareas({ agregarTarea }) {
   
   // Definimos varios estados con useState para manejar los valores del formulario.
-  // 'titulo' guarda el valor del campo de texto para el título de la tarea, comenzando como una cadena vacía.
   const [titulo, setTitulo] = useState('');
-  
-  // 'descripcion' almacena el texto del campo de descripción.
   const [descripcion, setDescripcion] = useState('');
-  
   const [categoria, setCategoria] = useState('');
   const [categorias, setCategorias] = useState([]);
   const [prioridad, setPrioridad] = useState('');
@@ -17,15 +14,18 @@ function FormularioTareas({ categorias: categoriasProp, estados: estadosProp, ag
   const [estado, setEstado] = useState('');
   const [estados, setEstados] = useState([]);
   const [fechaVencimiento, setFechaVencimiento] = useState('');
+  const userId = JSON.parse(localStorage.getItem('user')).userId;
+  const [successMessage, setSuccessMessage] = useState('');
+  const navigate = useNavigate();
 
   // Función para obtener categorías desde el backend
   const obtenerCategorias = async () => {
     try {
       const response = await fetch('http://localhost:3001/categoria');
       const data = await response.json();
-      setCategorias(data); // Guardamos las categorías
+      setCategorias(data);
       if (data.length > 0) {
-        setCategoria(data[0].PK_Categoria); // Establecemos la primera categoría como predeterminada
+        setCategoria(data[0].PK_Categoria);
       }
     } catch (error) {
       console.error('Error al obtener categorías:', error);
@@ -37,9 +37,9 @@ function FormularioTareas({ categorias: categoriasProp, estados: estadosProp, ag
     try {
       const response = await fetch('http://localhost:3001/estado');
       const data = await response.json();
-      setEstados(data); // Guardamos los estados en el estado
+      setEstados(data);
       if (data.length > 0) {
-        setEstado(data[0].PK_Estado); // Establecemos el primer estado como predeterminado
+        setEstado(data[0].PK_Estado);
       }
     } catch (error) {
       console.error('Error al obtener estados:', error);
@@ -51,9 +51,9 @@ function FormularioTareas({ categorias: categoriasProp, estados: estadosProp, ag
     try {
       const response = await fetch('http://localhost:3001/prioridad');
       const data = await response.json();
-      setPrioridades(data); // Guardamos las prioridades en el estado
+      setPrioridades(data);
       if (data.length > 0) {
-        setPrioridad(data[0].PK_Prioridad); // Establecemos la primera prioridad como predeterminada
+        setPrioridad(data[0].PK_Prioridad);
       }
     } catch (error) {
       console.error('Error al obtener prioridades:', error);
@@ -61,117 +61,161 @@ function FormularioTareas({ categorias: categoriasProp, estados: estadosProp, ag
   };
 
   // Esta función se llama cuando el usuario envía el formulario.
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Evita que el formulario recargue la página al ser enviado.
-    
-    // Llamamos a la función agregarTarea, pasando un objeto con los valores actuales del formulario.
-    agregarTarea({ 
-      title: titulo, // Título de la tarea
-      description: descripcion, // Descripción de la tarea
-      category: categoria.nombre, // Categoría seleccionada
-      priority: prioridad, // Prioridad seleccionada
-      status: estado, // Estado seleccionado
-      dueDate: fechaVencimiento, // Fecha de vencimiento
-      completed: false // La tarea se crea como no completada
-    });
-    
-    // Después de agregar la tarea, limpiamos los campos de título, descripción y fecha de vencimiento.
-    setTitulo('');
-    setDescripcion('');
-    setFechaVencimiento('');
+
+    // Crear el objeto de la nueva tarea
+    const nuevaTarea = { 
+      titulo, 
+      descripcion, 
+      fecha_creacion: new Date().toISOString().split('T')[0], // Fecha de creación como fecha actual
+      fecha_limite: fechaVencimiento, 
+      FK_Usuario: userId,
+      FK_Estado: estado, 
+      FK_Prioridad: prioridad, 
+      FK_Categoria: categoria 
+    };
+
+    try {
+      const response = await fetch('http://localhost:3001/tarea/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevaTarea),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        agregarTarea(nuevaTarea); // Llama a la función agregarTarea pasada como prop
+        setSuccessMessage('Tarea agregada con éxito!');
+        // Limpia los campos del formulario
+        setTitulo('');
+        setDescripcion('');
+        setFechaVencimiento('');
+
+        setTimeout(() => {
+          setSuccessMessage('');
+          navigate('/tareas');
+        }, 3000);
+      } else {
+        console.error('Error al agregar tarea:', result.message);
+      }
+    } catch (error) {
+      console.error('Error al agregar tarea:', error);
+    }
   };
 
-    // useEffect para cargar las categorías, estados y prioridades al montar el componente
-    useEffect(() => {
-      obtenerCategorias(); // Carga las categorías
-      obtenerEstados(); // Carga los estados
-      obtenerPrioridades(); // Carga las prioridades
-    }, []);
+  // useEffect para cargar las categorías, estados y prioridades al montar el componente
+  useEffect(() => {
+    obtenerCategorias(); // Carga las categorías
+    obtenerEstados(); // Carga los estados
+    obtenerPrioridades(); // Carga las prioridades
+  }, []);
+
+  // Función para cerrar el mensaje de éxito
+  const cerrarMensaje = () => {
+    setSuccessMessage('');
+  };
 
   return (
-    // El formulario llama a handleSubmit cuando se envía.
     <form onSubmit={handleSubmit}>
+      <h3>Agregar Tarea</h3>
 
-    <h3>Agregar Tarea</h3>
+      {/* Mensaje de éxito */}
+      {successMessage && (
+        <div className="alert alert-success d-flex justify-content-between align-items-center">
+          {successMessage}
+          <button onClick={cerrarMensaje} className="btn-close" aria-label="Close"></button> {/* Botón para cerrar */}
+        </div>
+      )}
       
-      {/* Campo de entrada para el título de la tarea */}
       <div className="mb-3">
         <label className="form-label">Título</label>
         <input
           type="text"
           className="form-control"
-          value={titulo} // El valor del input está vinculado al estado 'titulo'
-          onChange={(e) => setTitulo(e.target.value)} // Actualizamos 'titulo' con el nuevo valor que ingrese el usuario.
-          required // Este campo es obligatorio
+          value={titulo}
+          placeholder='Título de la tarea'
+          onChange={(e) => setTitulo(e.target.value)}
+          required
         />
       </div>
       
-      {/* Campo de texto para la descripción de la tarea */}
       <div className="mb-3">
         <label className="form-label">Descripción</label>
         <textarea
           className="form-control"
-          value={descripcion} // El valor está vinculado a 'descripcion'
-          onChange={(e) => setDescripcion(e.target.value)} // Actualizamos 'descripcion' con el valor ingresado por el usuario.
-          required // Este campo también es obligatorio
+          value={descripcion}
+          placeholder='Descripción de la tarea'
+          onChange={(e) => setDescripcion(e.target.value)}
+          required
         />
       </div>
 
-      {/* Selector para elegir la categoría de la tarea */}
       <label className="form-label">Categoría</label>
       <select
         className="form-control mb-3"
-        value={categoria} // Vinculado al estado 'categoria'
-        onChange={(e) => setCategoria(e.target.value)} // Actualizamos 'categoria' cuando el usuario selecciona una nueva opción.
+        value={categoria}
+        onChange={(e) => setCategoria(e.target.value)}
       >
         {categorias.map((cat, index) => (
-          <option key={index} value={cat.PK_Categoria}>{cat.nombre}</option> // Mostramos cada categoría en el selector
+          <option key={index} value={cat.PK_Categoria}>{cat.nombre}</option>
         ))}
       </select>
 
-      {/* Selector para elegir la prioridad de la tarea */}
       <label className="form-label">Prioridad</label>
       <select
         className="form-control mb-3"
-        value={prioridad} // Vinculado al estado 'prioridad'
-        onChange={(e) => setPrioridad(e.target.value)} // Actualizamos 'prioridad' cuando el usuario cambia su valor.
+        value={prioridad}
+        onChange={(e) => setPrioridad(e.target.value)}
       >
         {prioridades.map((pri, index) => (
           <option key={index} value={pri.PK_Prioridad}>{pri.nombre}</option>
         ))}
       </select>
 
-      {/* Selector para elegir el estado de la tarea */}
       <label className="form-label">Estado</label>
       <select
         className="form-control mb-3"
-        value={estado} // Vinculado al estado 'estado'
-        onChange={(e) => setEstado(e.target.value)} // Actualizamos 'estado' cuando se selecciona una nueva opción.
+        value={estado}
+        onChange={(e) => setEstado(e.target.value)}
       >
         {estados.map((est, index) => (
-          <option key={index} value={est.PK_Estado}>{est.nombre}</option> // Mostramos cada estado en el selector
+          <option key={index} value={est.PK_Estado}>{est.nombre}</option>
         ))}
       </select>
 
-      {/* Input para ingresar fecha de vencimiento */}
-      {/* Restringir que la fecha sea a futuro */}
       <div className="mb-3">
         <label className="form-label">Fecha de vencimiento</label>
         <input
           type="date"
           className="form-control"
           min={new Date().toISOString().split('T')[0]}
-          value={fechaVencimiento} // Vinculado al estado 'fechaVencimiento'
-          onChange={(e) => setFechaVencimiento(e.target.value)} // Actualizar 'fechaVencimiento'
+          value={fechaVencimiento}
+          onChange={(e) => setFechaVencimiento(e.target.value)}
           required
         />
       </div>
 
-      {/* Botón para enviar el formulario */}
-      <button type="submit" className="btn btn-primary">Agregar Tarea</button>
+      <div className="d-flex justify-content-center">
+        <button 
+          type="button" 
+          className="btn btn-secondary btn-md">
+          <Link to="/tareas" style={{ textDecoration: 'none', color: 'inherit' }}>
+          Cancelar
+          </Link>
+        </button>
+        <button 
+          type="submit" 
+          className="btn btn-primary btn-md">
+          Agregar
+        </button>
+      </div>
+
     </form>
   );
 }
 
-// Exportamos el componente para que pueda ser usado en otros archivos.
 export default FormularioTareas;
