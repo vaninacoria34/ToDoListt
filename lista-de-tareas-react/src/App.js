@@ -4,20 +4,23 @@ import AgregarCategoria from './components/AgregarCategoria';
 import AgregarEstado from './components/AgregarEstado';
 import FormularioTareas from './components/FormularioTareas';
 import ListaDeTareas from './components/ListaDeTareas';
+import EditarTarea from './components/EditarTarea';
 import HomePage from './components/HomePage';
-import RegistroPage from './components/RegistroPage'; 
+import RegistroPage from './components/RegistroPage';
+import LogInPage from './components/LogInPage';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';  
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function App() {
   const [tasks, setTasks] = useState([]);
   const [categorias, setCategorias] = useState(['Trabajo', 'Estudio', 'Personal']);
   const [estados, setEstados] = useState(['Pendiente', 'En progreso', 'Completada']);
   const [darkMode, setDarkMode] = useState(false);
+  const [user, setUser] = useState(null); // Estado para manejar el usuario logueado
 
-  // Cargar datos desde localStorage al montar el componente (sin dependencias innecesarias)
+  // Cargar datos desde localStorage al montar el componente
   useEffect(() => {
     const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
     setTasks(storedTasks);
@@ -32,19 +35,23 @@ function App() {
     if (storedDarkMode === 'enabled') {
       setDarkMode(true);
     }
+
+    // Simulando la carga del usuario desde localStorage o contexto
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+    if (storedUser) {
+      setUser(storedUser); // Establece el usuario logueado
+    }
   }, []);  // Solo se ejecuta al montar el componente
 
-  // Guardar tareas en localStorage cuando cambien
+  // Guardar tareas, categorías, y estados en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
   }, [tasks]);
 
-  // Guardar categorías en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('categories', JSON.stringify(categorias));
   }, [categorias]);
 
-  // Guardar estados en localStorage cuando cambien
   useEffect(() => {
     localStorage.setItem('statuses', JSON.stringify(estados));
   }, [estados]);
@@ -99,6 +106,14 @@ function App() {
     setEstados(nuevosEstados);
   };
 
+  // Función para manejar el cierre de sesión
+  const handleLogout = () => {
+    setUser(null); // Limpia el estado del usuario
+    localStorage.removeItem('user'); // Elimina el usuario del localStorage
+    // Redirigir a la página de inicio después de cerrar sesión
+    window.location.href = '/';
+  };
+
   return (
     <Router>
       <div className={`app ${darkMode ? 'dark-mode' : ''}`}>
@@ -111,29 +126,71 @@ function App() {
             </button>
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav ms-auto">
-                <li className="nav-item">
-                  <Link className="nav-link" to="/">Inicio</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/registro">Registrarse</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/tareas">Tareas</Link>
-                </li>
+                {user ? (
+                  <>
+                    <li className="nav-item dropdown">
+                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tareas
+                      </a>
+                      <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><Link className="dropdown-item" to="/tareas">Ver Tareas</Link></li>
+                        <li><Link className="dropdown-item" to="/addtareas">Agregar Tareas</Link></li>
+                      </ul>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/categoria">Agregar Categoría</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/estado">Agregar Estado</Link>
+                    </li>
+                    {/* Botón de contraste */}
+                    <li className="nav-item">
+                      <button
+                        id="toggle-contrast"
+                        className="btn btn-info"
+                        onClick={toggleDarkMode}
+                        title={darkMode ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
+                      >
+                        <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                      </button>
+                    </li>
+                    <li className="nav-item dropdown">
+                      <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {`${user.nombre} ${user.apellido}`}
+                      </a>
+                      <ul className="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a className="dropdown-item" onClick={handleLogout}>Cerrar sesión</a></li>
+                      </ul>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/login">Iniciar sesión</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/registro">Registrarse</Link>
+                    </li>
+                    {/* Botón de contraste */}
+                    <li className="nav-item">
+                      <button
+                        id="toggle-contrast"
+                        className="btn btn-info"
+                        onClick={toggleDarkMode}
+                        title={darkMode ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
+                      >
+                        <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'}`}></i>
+                      </button>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
           </div>
         </nav>
 
+
         <div className="container mt-4">
-          {/* Botón para activar/desactivar contraste */}
-          <button
-            id="toggle-contrast"
-            className="btn btn-secondary mb-3"
-            onClick={toggleDarkMode}  // Usa la nueva función de toggle
-          >
-            {darkMode ? 'Desactivar Modo Oscuro' : 'Activar Modo Oscuro'}
-          </button>
           
           <Routes>
             {/* Página inicial con fondo turquesa y carrusel */}
@@ -142,28 +199,55 @@ function App() {
             {/* Página de registro */}
             <Route path="/registro" element={<RegistroPage />} />
 
-            {/* Página de Tareas (donde gestionas las categorías, estados y tareas) */}
+            {/* Página de inicio de sesión */}
+            <Route path="/login" element={<LogInPage setUser={setUser} />} /> {/* Asegúrate de pasar setUser si necesitas iniciar sesión aquí */}
+
+            {/* Página de Tareas */}
             <Route path="/tareas" element={
+              <>
+                <ListaDeTareas
+                  tareas={tasks}
+                  eliminarTarea={eliminarTarea}
+                  user={user} // Agrega esta línea para pasar el user
+                />
+              </>
+            } />
+            {/* Página de Categorías */}
+            <Route path="/categoria" element={
               <>
                 <AgregarCategoria 
                   agregarCategoria={agregarCategoria} 
                   categorias={categorias} 
                   eliminarCategoria={eliminarCategoria} 
                 />
+              </>
+            } />
+            {/* Página de Estados */}
+              <Route path="/estado" element={
+              <>
                 <AgregarEstado 
                   agregarEstado={agregarEstado} 
                   estados={estados} 
                   eliminarEstado={eliminarEstado} // Aquí pasamos la función eliminarEstado
                 />
+              </>
+            } />
+            {/* Página de Agregar Tareas */}
+              <Route path="/addtareas" element={
+              <>
                 <FormularioTareas 
                   categorias={categorias} 
                   estados={estados} 
                   agregarTarea={agregarTarea} 
                 />
-                <ListaDeTareas
-                  tareas={tasks}
-                  eliminarTarea={eliminarTarea}
-                  alternarEstadoTarea={alternarEstadoTarea}
+              </>
+            } />
+            {/* Página de Editar Tareas */}
+              <Route path="/editTarea/:tareaId" element={
+              <>
+                <EditarTarea 
+                  categorias={categorias} 
+                  estados={estados}
                 />
               </>
             } />
